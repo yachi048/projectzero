@@ -12,8 +12,8 @@ public class UserTest {
 
         User user = new User();
 
-        user.setUsername("yachi123");
-        user.setEmail("yachi123@gmail.com");
+        user.setUsername("chandra");
+        user.setEmail("chandra@gmail.com");
         user.setPasswordHash("password123");
         user.setStatus("ACTIVE");
         user.setRole("USER");

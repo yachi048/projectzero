@@ -1,64 +1,181 @@
 package com.instagram;
+
 import com.instagram.controller.UserController;
 import com.instagram.model.User;
+import com.instagram.service.UserService;
 import com.instagram.service.UserServiceImpl;
+
+import java.util.List;
+
 public class TestUser {
-        public static void main(String[] args) {
-            UserController controller = new UserController(new UserServiceImpl());
 
-            // 1. Register
-            User u = new User();
-            u.setUsername("testuser1");
-            u.setEmail("testuser1@mail.com");
-            u.setPasswordHash("MyPass123");   // plain password, gets hashed inside
-            boolean registered = controller.registerUser(u);
-            System.out.println("1. Register: " + (registered ? "PASS" : "FAIL"));
+    public static void main(String[] args) {
 
-            // 2. Duplicate username should fail
-            User dup = new User();
-            dup.setUsername("testuser1");
-            dup.setEmail("different@mail.com");
-            dup.setPasswordHash("AnotherPass1");
-            boolean dupResult = controller.registerUser(dup);
-            System.out.println("2. Duplicate username blocked: " + (!dupResult ? "PASS" : "FAIL"));
+        UserService userService = new UserServiceImpl();
+        UserController userController = new UserController(userService);
 
-            // 3. Login with correct password
-            User loginOk = controller.login("testuser1", "MyPass123");
-            System.out.println("3. Login correct password: " + (loginOk != null ? "PASS" : "FAIL"));
+        // =====================================================
+        // 1. REGISTER USER
+        // =====================================================
 
-            // 4. Login with wrong password should fail
-            User loginBad = controller.login("testuser1", "wrongPassword");
-            System.out.println("4. Login wrong password blocked: " + (loginBad == null ? "PASS" : "FAIL"));
+        User user = new User();
 
-            // 5. Get by ID
-            if (loginOk != null) {
-                User byId = controller.getUserById(loginOk.getUserId());
-                System.out.println("5. Get by ID: " + (byId != null && byId.getUsername().equals("testuser1") ? "PASS" : "FAIL"));
-            }
+        user.setUsername("testuser2");
+        user.setEmail("testuser2@gmail.com");
+        user.setPasswordHash("password123");
+        user.setStatus("ACTIVE");
+        user.setRole("USER");
 
-            // 6. Get by username
-            User byUsername = controller.getUserByUsername("testuser1");
-            System.out.println("6. Get by username: " + (byUsername != null ? "PASS" : "FAIL"));
+        boolean registered = userController.registerUser(user);
 
-            // 7. Update
-            if (loginOk != null) {
-                loginOk.setEmail("updated@mail.com");
-                boolean updated = controller.updateUser(loginOk);
-                System.out.println("7. Update user: " + (updated ? "PASS" : "FAIL"));
-            }
+        System.out.println("1. Register: "
+                + (registered ? "PASS" : "FAIL"));
 
-            // 8. Deactivate
-            if (loginOk != null) {
-                boolean deactivated = controller.deactivateUser(loginOk.getUserId());
-                System.out.println("8. Deactivate: " + (deactivated ? "PASS" : "FAIL"));
 
-                // 9. Login after deactivation should fail
-                User loginAfterDeactivate = controller.login("testuser1", "MyPass123");
-                System.out.println("9. Login blocked after deactivate: " + (loginAfterDeactivate == null ? "PASS" : "FAIL"));
-            }
+        // =====================================================
+        // 2. DUPLICATE USERNAME
+        // =====================================================
 
-            // 10. Get all users
-            System.out.println("10. Total users in DB: " + controller.getAllUsers().size());
+        User duplicateUser = new User();
+
+        duplicateUser.setUsername("testuser2");
+        duplicateUser.setEmail("different@gmail.com");
+        duplicateUser.setPasswordHash("password456");
+        duplicateUser.setStatus("ACTIVE");
+        duplicateUser.setRole("USER");
+
+        boolean duplicateResult =
+                userController.registerUser(duplicateUser);
+
+        System.out.println("2. Duplicate username blocked: "
+                + (!duplicateResult ? "PASS" : "FAIL"));
+
+
+        // =====================================================
+        // 3. LOGIN WITH CORRECT PASSWORD
+        // =====================================================
+
+        User loggedInUser =
+                userController.login("testuser2", "password123");
+
+        System.out.println("3. Login correct password: "
+                + (loggedInUser != null ? "PASS" : "FAIL"));
+
+
+        // =====================================================
+        // 4. LOGIN WITH WRONG PASSWORD
+        // =====================================================
+
+        User wrongLogin =
+                userController.login("testuser2", "wrongpassword");
+
+        System.out.println("4. Login wrong password blocked: "
+                + (wrongLogin == null ? "PASS" : "FAIL"));
+
+
+        // =====================================================
+        // 5. GET USER BY ID
+        // =====================================================
+
+        User savedUser =
+                userController.getUserByUsername("testuser2");
+
+        if (savedUser != null) {
+
+            int userId = savedUser.getUserId();
+
+            User userById =
+                    userController.getUserById(userId);
+
+            System.out.println("5. Get by ID: "
+                    + (userById != null ? "PASS" : "FAIL"));
+
+        } else {
+
+            System.out.println("5. Get by ID: FAIL");
         }
 
+
+        // =====================================================
+        // 6. GET USER BY USERNAME
+        // =====================================================
+
+        User userByUsername =
+                userController.getUserByUsername("testuser2");
+
+        System.out.println("6. Get by username: "
+                + (userByUsername != null ? "PASS" : "FAIL"));
+
+
+        // =====================================================
+        // 7. UPDATE USER
+        // =====================================================
+
+        if (userByUsername != null) {
+
+            userByUsername.setEmail("updated2@gmail.com");
+            userByUsername.setPasswordHash("newpassword123");
+            userByUsername.setStatus("ACTIVE");
+            userByUsername.setRole("USER");
+
+            boolean updated =
+                    userController.updateUser(userByUsername);
+
+            System.out.println("7. Update user: "
+                    + (updated ? "PASS" : "FAIL"));
+
+        } else {
+
+            System.out.println("7. Update user: FAIL");
+        }
+
+
+        // =====================================================
+        // 8. DEACTIVATE USER
+        // =====================================================
+
+        User userBeforeDeactivate =
+                userController.getUserByUsername("testuser2");
+
+        if (userBeforeDeactivate != null) {
+
+            int userId =
+                    userBeforeDeactivate.getUserId();
+
+            boolean deactivated =
+                    userController.deactivateUser(userId);
+
+            System.out.println("8. Deactivate: "
+                    + (deactivated ? "PASS" : "FAIL"));
+
+        } else {
+
+            System.out.println("8. Deactivate: FAIL");
+        }
+
+
+        // =====================================================
+        // 9. LOGIN AFTER DEACTIVATION
+        // =====================================================
+
+        User inactiveLogin =
+                userController.login(
+                        "testuser2",
+                        "newpassword123"
+                );
+
+        System.out.println("9. Login blocked after deactivate: "
+                + (inactiveLogin == null ? "PASS" : "FAIL"));
+
+
+        // =====================================================
+        // 10. GET ALL USERS
+        // =====================================================
+
+        List<User> users =
+                userController.getAllUsers();
+
+        System.out.println("10. Total users in DB: "
+                + users.size());
+    }
 }
