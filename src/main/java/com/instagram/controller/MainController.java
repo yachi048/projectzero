@@ -1,44 +1,86 @@
 package com.instagram.controller;
 
 import com.instagram.service.*;
-import com.instagram.service.UserServiceImpl;
-import com.instagram.service.ProfileServiceImpl;
-import com.instagram.service.PostServiceImpl;
-import com.instagram.service.CommentServiceImpl;
-import com.instagram.service.LikeServiceImpl;
-import com.instagram.service.FollowServiceImpl;
 
 public class MainController {
 
-    public static void main(String[] args) {
+    private final UserController userController;
+    private final ProfileController profileController;
+    private final PostController postController;
+    private final CommentController commentController;
+    private final LikeController likeController;
+    private final FollowController followController;
 
-        // Create Service objects
-        UserService userService = new UserServiceImpl();
-        ProfileService profileService = new ProfileServiceImpl();
-        PostService postService = new PostServiceImpl();
-        CommentService commentService = new CommentServiceImpl();
-        LikeService likeService = new LikeServiceImpl();
-        FollowService followService = new FollowServiceImpl();
+    public MainController() {
 
-        // Create Controller objects
-        UserController userController =
+        UserService userService =
+                new UserServiceImpl();
+
+        ProfileService profileService =
+                new ProfileServiceImpl();
+
+        PostService postService =
+                new PostServiceImpl();
+
+        CommentService commentService =
+                new CommentServiceImpl();
+
+        LikeService likeService =
+                new LikeServiceImpl();
+
+        FollowService followService =
+                new FollowServiceImpl();
+
+        this.userController =
                 new UserController(userService);
 
-        ProfileController profileController =
+        this.profileController =
                 new ProfileController(profileService);
 
-        PostController postController =
+        this.postController =
                 new PostController(postService);
 
-        CommentController commentController =
+        this.commentController =
                 new CommentController(commentService);
 
-        LikeController likeController =
+        this.likeController =
                 new LikeController(likeService);
 
-        FollowController followController =
+        this.followController =
                 new FollowController(followService);
+    }
 
-        System.out.println("Instagram Application Started Successfully!");
+    public UserController getUserController() {
+        return userController;
+    }
+
+    public ProfileController getProfileController() {
+        return profileController;
+    }
+
+    public PostController getPostController() {
+        return postController;
+    }
+
+    public CommentController getCommentController() {
+        return commentController;
+    }
+
+    public LikeController getLikeController() {
+        return likeController;
+    }
+
+    public FollowController getFollowController() {
+        return followController;
+    }
+
+    public static void main(String[] args) {
+
+        MainController mainController =
+                new MainController();
+
+        System.out.println(
+                "Instagram Application Started Successfully!"
+        );
     }
 }

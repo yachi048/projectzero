@@ -20,5 +20,8 @@ public interface UserDAO {
 
     boolean deactivateUser(int userId);
 
-    boolean existsByUsernameOrEmail(String username, String email);
+    boolean existsByUsernameOrEmail(
+            String username,
+            String email
+    );
 }

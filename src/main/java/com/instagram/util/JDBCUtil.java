@@ -13,7 +13,7 @@ public class JDBCUtil {
             "root";
 
     private static final String PASSWORD =
-            "YOUR_PASSWORD";
+            "Mysql@123";
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(

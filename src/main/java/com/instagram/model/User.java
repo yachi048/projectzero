@@ -13,13 +13,11 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // No-argument constructor
     public User() {
     }
 
-    // Parameterized constructor
-    public User(int userId, String username, String email, String passwordHash,
-                String status, String role,
+    public User(int userId, String username, String email,
+                String passwordHash, String status, String role,
                 LocalDateTime createdAt, LocalDateTime updatedAt) {
 
         this.userId = userId;
@@ -31,8 +29,6 @@ public class User {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-
-    // Getters and Setters
 
     public int getUserId() {
         return userId;

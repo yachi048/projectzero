@@ -9,16 +9,14 @@ public class Profile {
     private String fullName;
     private String bio;
     private String phone;
-    private String profileImageUrl;
+    private String profileImage;
     private LocalDateTime updatedAt;
 
-    // No-argument constructor
     public Profile() {
     }
 
-    // Parameterized constructor
     public Profile(int profileId, int userId, String fullName, String bio,
-                   String phone, String profileImageUrl,
+                   String phone, String profileImage,
                    LocalDateTime updatedAt) {
 
         this.profileId = profileId;
@@ -26,11 +24,9 @@ public class Profile {
         this.fullName = fullName;
         this.bio = bio;
         this.phone = phone;
-        this.profileImageUrl = profileImageUrl;
+        this.profileImage = profileImage;
         this.updatedAt = updatedAt;
     }
-
-    // Getters and Setters
 
     public int getProfileId() {
         return profileId;
@@ -72,12 +68,12 @@ public class Profile {
         this.phone = phone;
     }
 
-    public String getProfileImageUrl() {
-        return profileImageUrl;
+    public String getProfileImage() {
+        return profileImage;
     }
 
-    public void setProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
     public LocalDateTime getUpdatedAt() {

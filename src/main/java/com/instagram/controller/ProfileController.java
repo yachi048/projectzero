@@ -3,36 +3,53 @@ package com.instagram.controller;
 import com.instagram.model.Profile;
 import com.instagram.service.ProfileService;
 
+import java.util.logging.Logger;
+
 public class ProfileController {
 
-    private ProfileService profileService;
+    // Logger at CLASS LEVEL
+    private static final Logger logger =
+            Logger.getLogger(ProfileController.class.getName());
+
+    private final ProfileService profileService;
 
     public ProfileController(ProfileService profileService) {
+
         this.profileService = profileService;
+
+        logger.info("ProfileController initialized");
     }
 
     public boolean createProfile(Profile profile) {
-        // TODO: Call ProfileService
-        return false;
-    }
 
-    public Profile getProfileById(int profileId) {
-        // TODO: Call ProfileService
-        return null;
+        logger.info("Create profile request");
+
+        return profileService.createProfile(profile);
     }
 
     public Profile getProfileByUserId(int userId) {
-        // TODO: Call ProfileService
-        return null;
+
+        logger.info(
+                "Get profile request for userId: " + userId
+        );
+
+        return profileService.getProfileByUserId(userId);
     }
 
     public boolean updateProfile(Profile profile) {
-        // TODO: Call ProfileService
-        return false;
+
+        logger.info("Update profile request");
+
+        return profileService.updateProfile(profile);
     }
 
     public boolean deleteProfile(int profileId) {
-        // TODO: Call ProfileService
-        return false;
+
+        logger.info(
+                "Delete profile request for profileId: "
+                        + profileId
+        );
+
+        return profileService.deleteProfile(profileId);
     }
 }
