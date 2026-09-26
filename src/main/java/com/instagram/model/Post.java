@@ -7,30 +7,27 @@ public class Post {
     private int postId;
     private int userId;
     private String caption;
-    private String imageUrl;
-    private String status;
+    private byte[] image;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // No-argument constructor
     public Post() {
     }
 
-    // Parameterized constructor
-    public Post(int postId, int userId, String caption, String imageUrl,
-                String status, LocalDateTime createdAt,
+    public Post(int postId,
+                int userId,
+                String caption,
+                byte[] image,
+                LocalDateTime createdAt,
                 LocalDateTime updatedAt) {
 
         this.postId = postId;
         this.userId = userId;
         this.caption = caption;
-        this.imageUrl = imageUrl;
-        this.status = status;
+        this.image = image;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-
-    // Getters and Setters
 
     public int getPostId() {
         return postId;
@@ -56,20 +53,12 @@ public class Post {
         this.caption = caption;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public byte[] getImage() {
+        return image;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     public LocalDateTime getCreatedAt() {

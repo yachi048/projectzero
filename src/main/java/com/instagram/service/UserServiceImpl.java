@@ -2,6 +2,7 @@ package com.instagram.service;
 
 import com.instagram.dao.UserDAO;
 import com.instagram.dao.UserDAOImpl;
+import com.instagram.exception.UserException;
 import com.instagram.model.User;
 
 import java.util.List;
@@ -28,28 +29,40 @@ public class UserServiceImpl implements UserService {
 
         if (user == null) {
             logger.warning("User is null");
-            return false;
+
+            throw new UserException(
+                    "User cannot be null"
+            );
         }
 
         if (user.getUsername() == null
                 || user.getUsername().trim().isEmpty()) {
 
             logger.warning("Username is required");
-            return false;
+
+            throw new UserException(
+                    "Username is required"
+            );
         }
 
         if (user.getEmail() == null
                 || user.getEmail().trim().isEmpty()) {
 
             logger.warning("Email is required");
-            return false;
+
+            throw new UserException(
+                    "Email is required"
+            );
         }
 
         if (user.getPasswordHash() == null
                 || user.getPasswordHash().trim().isEmpty()) {
 
             logger.warning("Password is required");
-            return false;
+
+            throw new UserException(
+                    "Password is required"
+            );
         }
 
         if (userDAO.existsByUsernameOrEmail(
@@ -61,17 +74,23 @@ public class UserServiceImpl implements UserService {
                             + user.getUsername()
             );
 
-            return false;
+            throw new UserException(
+                    "Username or email already exists"
+            );
         }
 
-        boolean result = userDAO.addUser(user);
+        boolean result =
+                userDAO.addUser(user);
 
         if (result) {
+
             logger.info(
                     "User registered successfully: "
                             + user.getUsername()
             );
+
         } else {
+
             logger.warning(
                     "User registration failed: "
                             + user.getUsername()
@@ -82,18 +101,42 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User login(String username, String password) {
+    public User login(
+            String username,
+            String password) {
 
         logger.info(
                 "Login request received for username: "
                         + username
         );
 
-        User user = userDAO.getUserByUsername(username);
+        if (username == null
+                || username.trim().isEmpty()) {
+
+            logger.warning("Username is required");
+
+            throw new UserException(
+                    "Username is required"
+            );
+        }
+
+        if (password == null
+                || password.trim().isEmpty()) {
+
+            logger.warning("Password is required");
+
+            throw new UserException(
+                    "Password is required"
+            );
+        }
+
+        User user =
+                userDAO.getUserByUsername(username);
 
         if (user != null
                 && user.getPasswordHash().equals(password)
-                && "ACTIVE".equalsIgnoreCase(user.getStatus())) {
+                && "ACTIVE".equalsIgnoreCase(
+                user.getStatus())) {
 
             logger.info(
                     "Login successful for username: "
@@ -108,7 +151,9 @@ public class UserServiceImpl implements UserService {
                         + username
         );
 
-        return null;
+        throw new UserException(
+                "Invalid username or password"
+        );
     }
 
     @Override
@@ -119,16 +164,37 @@ public class UserServiceImpl implements UserService {
                         + userId
         );
 
-        User user = userDAO.getUserById(userId);
+        if (userId <= 0) {
+
+            logger.warning(
+                    "Invalid userId: "
+                            + userId
+            );
+
+            throw new UserException(
+                    "User ID must be greater than 0"
+            );
+        }
+
+        User user =
+                userDAO.getUserById(userId);
 
         if (user != null) {
+
             logger.info(
                     "User found for userId: "
                             + userId
             );
+
         } else {
+
             logger.warning(
                     "User not found for userId: "
+                            + userId
+            );
+
+            throw new UserException(
+                    "User not found with ID: "
                             + userId
             );
         }
@@ -137,23 +203,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByUsername(String username) {
+    public User getUserByUsername(
+            String username) {
 
         logger.info(
                 "Get user request for username: "
                         + username
         );
 
-        User user = userDAO.getUserByUsername(username);
+        if (username == null
+                || username.trim().isEmpty()) {
+
+            logger.warning("Username is required");
+
+            throw new UserException(
+                    "Username is required"
+            );
+        }
+
+        User user =
+                userDAO.getUserByUsername(username);
 
         if (user != null) {
+
             logger.info(
                     "User found for username: "
                             + username
             );
+
         } else {
+
             logger.warning(
                     "User not found for username: "
+                            + username
+            );
+
+            throw new UserException(
+                    "User not found: "
                             + username
             );
         }
@@ -166,7 +252,8 @@ public class UserServiceImpl implements UserService {
 
         logger.info("Get all users request");
 
-        List<User> users = userDAO.getAllUsers();
+        List<User> users =
+                userDAO.getAllUsers();
 
         logger.info(
                 "Total users retrieved: "
@@ -179,21 +266,43 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean updateUser(User user) {
 
-        logger.info("Update user request received");
+        logger.info(
+                "Update user request received"
+        );
 
         if (user == null) {
+
             logger.warning("User is null");
-            return false;
+
+            throw new UserException(
+                    "User cannot be null"
+            );
         }
 
-        boolean result = userDAO.updateUser(user);
+        if (user.getUserId() <= 0) {
+
+            logger.warning(
+                    "Invalid userId: "
+                            + user.getUserId()
+            );
+
+            throw new UserException(
+                    "User ID must be greater than 0"
+            );
+        }
+
+        boolean result =
+                userDAO.updateUser(user);
 
         if (result) {
+
             logger.info(
                     "User updated successfully: "
                             + user.getUserId()
             );
+
         } else {
+
             logger.warning(
                     "User update failed: "
                             + user.getUserId()
@@ -204,21 +313,38 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean deactivateUser(int userId) {
+    public boolean deactivateUser(
+            int userId) {
 
         logger.info(
                 "Deactivate user request for userId: "
                         + userId
         );
 
-        boolean result = userDAO.deactivateUser(userId);
+        if (userId <= 0) {
+
+            logger.warning(
+                    "Invalid userId: "
+                            + userId
+            );
+
+            throw new UserException(
+                    "User ID must be greater than 0"
+            );
+        }
+
+        boolean result =
+                userDAO.deactivateUser(userId);
 
         if (result) {
+
             logger.info(
                     "User deactivated successfully: "
                             + userId
             );
+
         } else {
+
             logger.warning(
                     "User deactivation failed: "
                             + userId

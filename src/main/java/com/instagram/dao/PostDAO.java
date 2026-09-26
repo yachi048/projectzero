@@ -8,13 +8,13 @@ public interface PostDAO {
 
     boolean addPost(Post post);
 
-    Post getPostById(int postId);
-
     List<Post> getPostsByUserId(int userId);
 
-    List<Post> getAllPosts();
+    List<Post> getOtherUsersPosts(int userId);
+
+    Post getPostById(int postId);
 
     boolean updatePost(Post post);
 
-    boolean deletePost(int postId);
+    boolean deletePost(int postId, int userId);
 }

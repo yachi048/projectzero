@@ -1,19 +1,20 @@
 package com.instagram.service;
 
 import com.instagram.model.Post;
+
 import java.util.List;
 
 public interface PostService {
 
     boolean createPost(Post post);
 
+    List<Post> getOwnPosts(int userId);
+
+    List<Post> getOtherUsersPosts(int userId);
+
     Post getPostById(int postId);
 
-    List<Post> getPostsByUserId(int userId);
+    boolean updateOwnPost(Post post);
 
-    List<Post> getAllPosts();
-
-    boolean updatePost(Post post);
-
-    boolean deletePost(int postId);
+    boolean deleteOwnPost(int postId, int userId);
 }

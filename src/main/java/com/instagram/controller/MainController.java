@@ -13,6 +13,8 @@ public class MainController {
 
     public MainController() {
 
+        // Create Service objects
+
         UserService userService =
                 new UserServiceImpl();
 
@@ -31,23 +33,37 @@ public class MainController {
         FollowService followService =
                 new FollowServiceImpl();
 
+        // Create Controller objects
+
         this.userController =
-                new UserController(userService);
+                new UserController(
+                        userService
+                );
 
         this.profileController =
-                new ProfileController(profileService);
+                new ProfileController(
+                        profileService
+                );
 
         this.postController =
-                new PostController(postService);
+                new PostController(
+                        postService
+                );
 
         this.commentController =
-                new CommentController(commentService);
+                new CommentController(
+                        commentService
+                );
 
         this.likeController =
-                new LikeController(likeService);
+                new LikeController(
+                        likeService
+                );
 
         this.followController =
-                new FollowController(followService);
+                new FollowController(
+                        followService
+                );
     }
 
     public UserController getUserController() {
