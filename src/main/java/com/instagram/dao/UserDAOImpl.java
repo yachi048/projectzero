@@ -16,17 +16,28 @@ public class UserDAOImpl implements UserDAO {
     private static final Logger logger =
             Logger.getLogger(UserDAOImpl.class.getName());
 
+    // =========================================================
+    // ADD USER
+    // =========================================================
+
     @Override
     public boolean addUser(User user) {
 
-        logger.info(
-                "Adding user: "
-                        + user.getUsername()
-        );
+        logger.info("Adding user: " + user.getUsername());
 
-        String sql = "INSERT INTO users " +
-                "(username, email, password_hash, status, role) " +
-                "VALUES (?, ?, ?, ?, ?)";
+        // Set default values if they are not provided
+        if (user.getStatus() == null || user.getStatus().isBlank()) {
+            user.setStatus("ACTIVE");
+        }
+
+        if (user.getRole() == null || user.getRole().isBlank()) {
+            user.setRole("USER");
+        }
+
+        String sql =
+                "INSERT INTO users " +
+                        "(username, email, password_hash, status, role) " +
+                        "VALUES (?, ?, ?, ?, ?)";
 
         try (Connection connection = JDBCUtil.getConnection();
              PreparedStatement statement =
@@ -40,21 +51,22 @@ public class UserDAOImpl implements UserDAO {
 
             int rows = statement.executeUpdate();
 
-            boolean result = rows > 0;
+            if (rows > 0) {
 
-            if (result) {
                 logger.info(
                         "User added successfully: "
                                 + user.getUsername()
                 );
-            } else {
-                logger.warning(
-                        "User insertion failed: "
-                                + user.getUsername()
-                );
+
+                return true;
             }
 
-            return result;
+            logger.warning(
+                    "User insertion failed: "
+                            + user.getUsername()
+            );
+
+            return false;
 
         } catch (SQLException e) {
 
@@ -66,6 +78,10 @@ public class UserDAOImpl implements UserDAO {
             return false;
         }
     }
+
+    // =========================================================
+    // GET USER BY ID
+    // =========================================================
 
     @Override
     public User getUserById(int userId) {
@@ -114,6 +130,10 @@ public class UserDAOImpl implements UserDAO {
         return null;
     }
 
+    // =========================================================
+    // GET USER BY USERNAME
+    // =========================================================
+
     @Override
     public User getUserByUsername(String username) {
 
@@ -160,6 +180,10 @@ public class UserDAOImpl implements UserDAO {
 
         return null;
     }
+
+    // =========================================================
+    // GET USER BY EMAIL
+    // =========================================================
 
     @Override
     public User getUserByEmail(String email) {
@@ -208,6 +232,10 @@ public class UserDAOImpl implements UserDAO {
         return null;
     }
 
+    // =========================================================
+    // GET ALL USERS
+    // =========================================================
+
     @Override
     public List<User> getAllUsers() {
 
@@ -215,7 +243,8 @@ public class UserDAOImpl implements UserDAO {
 
         List<User> users = new ArrayList<>();
 
-        String sql = "SELECT * FROM users";
+        String sql =
+                "SELECT * FROM users";
 
         try (Connection connection = JDBCUtil.getConnection();
              PreparedStatement statement =
@@ -224,7 +253,10 @@ public class UserDAOImpl implements UserDAO {
                      statement.executeQuery()) {
 
             while (resultSet.next()) {
-                users.add(mapUser(resultSet));
+
+                users.add(
+                        mapUser(resultSet)
+                );
             }
 
             logger.info(
@@ -243,6 +275,10 @@ public class UserDAOImpl implements UserDAO {
         return users;
     }
 
+    // =========================================================
+    // UPDATE USER
+    // =========================================================
+
     @Override
     public boolean updateUser(User user) {
 
@@ -251,39 +287,81 @@ public class UserDAOImpl implements UserDAO {
                         + user.getUserId()
         );
 
+        // Make sure required values are not null
+        if (user.getStatus() == null ||
+                user.getStatus().isBlank()) {
+
+            user.setStatus("ACTIVE");
+        }
+
+        if (user.getRole() == null ||
+                user.getRole().isBlank()) {
+
+            user.setRole("USER");
+        }
+
         String sql =
-                "UPDATE users SET username = ?, email = ?, " +
-                        "password_hash = ?, status = ?, role = ? " +
+                "UPDATE users SET " +
+                        "username = ?, " +
+                        "email = ?, " +
+                        "password_hash = ?, " +
+                        "status = ?, " +
+                        "role = ? " +
                         "WHERE user_id = ?";
 
         try (Connection connection = JDBCUtil.getConnection();
              PreparedStatement statement =
                      connection.prepareStatement(sql)) {
 
-            statement.setString(1, user.getUsername());
-            statement.setString(2, user.getEmail());
-            statement.setString(3, user.getPasswordHash());
-            statement.setString(4, user.getStatus());
-            statement.setString(5, user.getRole());
-            statement.setInt(6, user.getUserId());
+            statement.setString(
+                    1,
+                    user.getUsername()
+            );
 
-            int rows = statement.executeUpdate();
+            statement.setString(
+                    2,
+                    user.getEmail()
+            );
 
-            boolean result = rows > 0;
+            statement.setString(
+                    3,
+                    user.getPasswordHash()
+            );
 
-            if (result) {
+            statement.setString(
+                    4,
+                    user.getStatus()
+            );
+
+            statement.setString(
+                    5,
+                    user.getRole()
+            );
+
+            statement.setInt(
+                    6,
+                    user.getUserId()
+            );
+
+            int rows =
+                    statement.executeUpdate();
+
+            if (rows > 0) {
+
                 logger.info(
                         "User updated successfully: "
                                 + user.getUserId()
                 );
-            } else {
-                logger.warning(
-                        "User update failed: "
-                                + user.getUserId()
-                );
+
+                return true;
             }
 
-            return result;
+            logger.warning(
+                    "User update failed: "
+                            + user.getUserId()
+            );
+
+            return false;
 
         } catch (SQLException e) {
 
@@ -296,6 +374,10 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
+    // =========================================================
+    // DEACTIVATE USER
+    // =========================================================
+
     @Override
     public boolean deactivateUser(int userId) {
 
@@ -305,32 +387,43 @@ public class UserDAOImpl implements UserDAO {
         );
 
         String sql =
-                "UPDATE users SET status = ? WHERE user_id = ?";
+                "UPDATE users " +
+                        "SET status = ? " +
+                        "WHERE user_id = ?";
 
         try (Connection connection = JDBCUtil.getConnection();
              PreparedStatement statement =
                      connection.prepareStatement(sql)) {
 
-            statement.setString(1, "INACTIVE");
-            statement.setInt(2, userId);
+            statement.setString(
+                    1,
+                    "INACTIVE"
+            );
 
-            int rows = statement.executeUpdate();
+            statement.setInt(
+                    2,
+                    userId
+            );
 
-            boolean result = rows > 0;
+            int rows =
+                    statement.executeUpdate();
 
-            if (result) {
+            if (rows > 0) {
+
                 logger.info(
                         "User deactivated successfully: "
                                 + userId
                 );
-            } else {
-                logger.warning(
-                        "User deactivation failed: "
-                                + userId
-                );
+
+                return true;
             }
 
-            return result;
+            logger.warning(
+                    "User deactivation failed: "
+                            + userId
+            );
+
+            return false;
 
         } catch (SQLException e) {
 
@@ -343,6 +436,10 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
+    // =========================================================
+    // CHECK DUPLICATE USERNAME OR EMAIL
+    // =========================================================
+
     @Override
     public boolean existsByUsernameOrEmail(
             String username,
@@ -353,15 +450,23 @@ public class UserDAOImpl implements UserDAO {
         );
 
         String sql =
-                "SELECT COUNT(*) FROM users " +
+                "SELECT COUNT(*) " +
+                        "FROM users " +
                         "WHERE username = ? OR email = ?";
 
         try (Connection connection = JDBCUtil.getConnection();
              PreparedStatement statement =
                      connection.prepareStatement(sql)) {
 
-            statement.setString(1, username);
-            statement.setString(2, email);
+            statement.setString(
+                    1,
+                    username
+            );
+
+            statement.setString(
+                    2,
+                    email
+            );
 
             try (ResultSet resultSet =
                          statement.executeQuery()) {
@@ -391,7 +496,12 @@ public class UserDAOImpl implements UserDAO {
         return false;
     }
 
-    private User mapUser(ResultSet resultSet)
+    // =========================================================
+    // MAP RESULTSET TO USER
+    // =========================================================
+
+    private User mapUser(
+            ResultSet resultSet)
             throws SQLException {
 
         User user = new User();
