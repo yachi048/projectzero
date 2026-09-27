@@ -1,6 +1,7 @@
 package com.instagram.service;
 
 import com.instagram.model.Comment;
+
 import java.util.List;
 
 public interface CommentService {
@@ -13,7 +14,9 @@ public interface CommentService {
 
     List<Comment> getCommentsByUserId(int userId);
 
-    boolean updateComment(Comment comment);
+    boolean updateOwnComment(Comment comment);
 
-    boolean deleteComment(int commentId);
+    boolean deleteOwnComment(int commentId, int userId);
+
+    int getCommentCount(int postId);
 }

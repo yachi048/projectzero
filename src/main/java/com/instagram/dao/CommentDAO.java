@@ -16,5 +16,7 @@ public interface CommentDAO {
 
     boolean updateComment(Comment comment);
 
-    boolean deleteComment(int commentId);
+    boolean deleteComment(int commentId, int userId);
+
+    int countByPost(int postId);
 }

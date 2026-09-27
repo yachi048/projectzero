@@ -7,20 +7,16 @@ public class Comment {
     private int commentId;
     private int userId;
     private int postId;
-    private Integer parentCommentId;
+    private Integer parentCommentId;   // null for a normal comment, set for a reply
     private String commentText;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // No-argument constructor
     public Comment() {
     }
 
-    // Parameterized constructor
-    public Comment(int commentId, int userId, int postId,
-                   Integer parentCommentId, String commentText,
-                   LocalDateTime createdAt, LocalDateTime updatedAt) {
-
+    public Comment(int commentId, int userId, int postId, Integer parentCommentId,
+                   String commentText, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.commentId = commentId;
         this.userId = userId;
         this.postId = postId;

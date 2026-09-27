@@ -9,21 +9,15 @@ public class Follow {
     private int followingId;
     private LocalDateTime createdAt;
 
-    // No-argument constructor
     public Follow() {
     }
 
-    // Parameterized constructor
-    public Follow(int followId, int followerId, int followingId,
-                  LocalDateTime createdAt) {
-
+    public Follow(int followId, int followerId, int followingId, LocalDateTime createdAt) {
         this.followId = followId;
         this.followerId = followerId;
         this.followingId = followingId;
         this.createdAt = createdAt;
     }
-
-    // Getters and Setters
 
     public int getFollowId() {
         return followId;
