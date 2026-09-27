@@ -9,12 +9,12 @@ public class Like {
     private int postId;
     private LocalDateTime createdAt;
 
-    // No-argument constructor
     public Like() {
     }
 
-    // Parameterized constructor
-    public Like(int likeId, int userId, int postId,
+    public Like(int likeId,
+                int userId,
+                int postId,
                 LocalDateTime createdAt) {
 
         this.likeId = likeId;
@@ -22,8 +22,6 @@ public class Like {
         this.postId = postId;
         this.createdAt = createdAt;
     }
-
-    // Getters and Setters
 
     public int getLikeId() {
         return likeId;

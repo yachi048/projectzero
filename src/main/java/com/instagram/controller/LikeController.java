@@ -2,44 +2,98 @@ package com.instagram.controller;
 
 import com.instagram.model.Like;
 import com.instagram.service.LikeService;
+import com.instagram.service.LikeServiceImpl;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class LikeController {
 
-    private LikeService likeService;
+    private static final Logger logger =
+            Logger.getLogger(
+                    LikeController.class.getName()
+            );
 
-    public LikeController(LikeService likeService) {
-        this.likeService = likeService;
+    private final LikeService likeService;
+
+    public LikeController() {
+
+        this.likeService =
+                new LikeServiceImpl();
+
+        logger.info(
+                "LikeController initialized"
+        );
     }
 
-    public boolean addLike(Like like) {
-        // TODO: Call LikeService
-        return false;
+    public LikeController(
+            LikeService likeService) {
+
+        this.likeService =
+                likeService;
+
+        logger.info(
+                "LikeController initialized"
+        );
     }
 
-    public boolean removeLike(int userId, int postId) {
-        // TODO: Call LikeService
-        return false;
+    public boolean likePost(
+            Like like) {
+
+        logger.info(
+                "Like post request"
+        );
+
+        return likeService.likePost(
+                like
+        );
     }
 
-    public boolean hasUserLikedPost(int userId, int postId) {
-        // TODO: Call LikeService
-        return false;
+    public boolean unlikePost(
+            int userId,
+            int postId) {
+
+        logger.info(
+                "Unlike post request"
+        );
+
+        return likeService.unlikePost(
+                userId,
+                postId
+        );
     }
 
-    public int getLikeCountByPostId(int postId) {
-        // TODO: Call LikeService
-        return 0;
+    public boolean hasUserLikedPost(
+            int userId,
+            int postId) {
+
+        return likeService.hasUserLikedPost(
+                userId,
+                postId
+        );
     }
 
-    public List<Like> getLikesByPostId(int postId) {
-        // TODO: Call LikeService
-        return null;
+    public int getLikeCount(
+            int postId) {
+
+        return likeService.getLikeCount(
+                postId
+        );
     }
 
-    public List<Like> getLikesByUserId(int userId) {
-        // TODO: Call LikeService
-        return null;
+    public List<Like> getLikesByPostId(
+            int postId) {
+
+        return likeService.getLikesByPostId(
+                postId
+        );
+    }
+
+    public List<Like> getLikesByUserId(
+            int userId) {
+
+        return likeService.getLikesByUserId(
+                userId
+        );
     }
 }
